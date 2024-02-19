@@ -500,33 +500,44 @@ export const compressImage = async (bufferOrFilePath: Buffer | string) => {
 export const unixTimestampSeconds = (date: Date = new Date()) => Math.floor(date.getTime()/1000)
 
 export function wapBytes(e, t, r) {
-  var a = null;
-  if (t && null != t.children)
+  let a = null;
+  if (t && t.children !== undefined)
     throw new Error(
       'Children should not be passed via props (see eslint check "react/no-children-props")',
     );
   if (Array.isArray(r)) a = r.filter(Boolean);
-  else if ('string' == typeof r) a = Binary.build(r).readByteArray();
+  else if (typeof r === 'string') a = Binary.build(r).readByteArray();
   else if (r instanceof ArrayBuffer) a = new Uint8Array(r);
   else if (r instanceof Uint8Array) a = r;
   else {
-    for (var n = [], s = 2; s < arguments.length; s++) {
-      var o = arguments[s];
-      o && n.push(o);
+    const n = [];
+    for (let s = 2; s < arguments.length; s++) {
+      const o = arguments[s];
+      if (o) n.push(o);
     }
     a = n;
   }
-  Array.isArray(a) && 0 === a.length && (a = null);
-  var l = {};
+  if (Array.isArray(a) && a.length === 0) a = null;
+  const l = {};
   if (t) {
-    var d = t;
-    Object.keys(d).forEach((t) => {
-      var r = d[t];
-      if (null == r) throw new Error(`Attr ${t} in <${e}> is null`);
-      r !== { sentinel: 'DROP_ATTR' } && (l[t] = r);
+    const d = t;
+    Object.keys(d).forEach((key) => {
+      const value = d[key];
+      if (value === null) throw new Error(`Attr ${key} in <${e}> is null`);
+      if (!isEqual(value, { sentinel: 'DROP_ATTR' })) l[key] = value;
     });
   }
   return new WapNode(e, l, a);
+}
+
+function isEqual(obj1, obj2) {
+  const obj1Keys = Object.keys(obj1);
+  const obj2Keys = Object.keys(obj2);
+  if (obj1Keys.length !== obj2Keys.length) return false;
+  for (let key of obj1Keys) {
+    if (obj1[key] !== obj2[key]) return false;
+  }
+  return true;
 }
 
 export const inflateBuffer = (buffer: any) => new Promise<Buffer>((res) => {
