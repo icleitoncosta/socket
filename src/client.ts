@@ -184,7 +184,7 @@ export class WaClient extends EventEmitter {
             },
         };
 
-        const serverHelloEnc = await this.noise.sendAndReceive(WAProto.HandshakeMessage.encode(data).finish());
+        const serverHelloEnc = await this.noise.sendAndReceive(WAProto?.HandshakeMessage.encode(data).finish());
 
         this.log('received server hello', toLowerCaseHex(serverHelloEnc));
         const { serverHello } = WAProto.HandshakeMessage.decode(serverHelloEnc);
@@ -208,7 +208,7 @@ export class WaClient extends EventEmitter {
             throw new Error('certProto wrong');
         }
 
-        const { issuer: certIssuer, key: certKey } = WAProto.Details.decode(certDetails);
+        const { issuer: certIssuer, key: certKey } = WAProto.NoiseCertificate.Details.decode(certDetails);
         if (certIssuer != CERT_ISSUER || !certKey) {
             throw new Error('invalid issuer');
         }
@@ -553,6 +553,7 @@ export class WaClient extends EventEmitter {
     private onNoiseNewFrame = async (frame) => {
         const data = await unpackStanza(frame);
         const stanza = decodeStanza(data);
+        this.log(stanza);
         this.log('FROM SERVER ->', stanza.toString());
         await this.handleStanza(stanza);
     };
@@ -714,32 +715,32 @@ export class WaClient extends EventEmitter {
                             this.logger.trace(`failed to generate link preview for message '${message.text}': ${error}`)
                         } 
                     }*/
-                    m.extendedTextMessage = WAProto.ExtendedTextMessage.fromObject(message as any);
+                    m.extendedTextMessage = WAProto.Message.ExtendedTextMessage.fromObject(message as any);
                 } else {
                     throw new Error("message needs to be a string or object with property 'text'");
                 }
                 break;
             case MessageType.location:
             case MessageType.liveLocation:
-                m.locationMessage = WAProto.LocationMessage.fromObject(message as any);
+                m.locationMessage = WAProto.Message.LocationMessage.fromObject(message as any);
                 break;
             case MessageType.contact:
-                m.contactMessage = WAProto.ContactMessage.fromObject(message as any);
+                m.contactMessage = WAProto.Message.ContactMessage.fromObject(message as any);
                 break;
             case MessageType.contactsArray:
-                m.contactsArrayMessage = WAProto.ContactsArrayMessage.fromObject(message as any);
+                m.contactsArrayMessage = WAProto.Message.ContactsArrayMessage.fromObject(message as any);
                 break;
             case MessageType.groupInviteMessage:
-                m.groupInviteMessage = WAProto.GroupInviteMessage.fromObject(message as any);
+                m.groupInviteMessage = WAProto.Message.GroupInviteMessage.fromObject(message as any);
                 break;
             case MessageType.listMessage:
-                m.listMessage = WAProto.ListMessage.fromObject(message as any);
+                m.listMessage = WAProto.Message.ListMessage.fromObject(message as any);
                 break;
             case MessageType.buttonsMessage:
-                m.buttonsMessage = WAProto.ButtonsMessage.fromObject(message as any);
+                m.buttonsMessage = WAProto.Message.ButtonsMessage.fromObject(message as any);
                 break;
             case MessageType.templateMessage:
-                m.templateMessage = WAProto.TemplateMessage.fromObject(message as any);
+                m.templateMessage = WAProto.Message.TemplateMessage.fromObject(message as any);
                 break;
             case MessageType.image:
             case MessageType.sticker:
@@ -1591,7 +1592,7 @@ export class WaClient extends EventEmitter {
         return picture.attrs.url ?? null;
     }
 
-    private async processHistorySyncNotification(historyNotification: WAProto.IHistorySyncNotification) {
+    private async processHistorySyncNotification(historyNotification: WAProto.Message.IHistorySyncNotification) {
         const buffer = await this.downloadFromMediaConn(
             {
                 directPath: historyNotification.directPath,

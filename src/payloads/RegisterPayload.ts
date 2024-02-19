@@ -20,7 +20,7 @@ export const generatePayloadRegister = (
     requireFullSync: false,
   };
 
-  const companionProto = WAProto.CompanionProps.encode(companion).finish();
+  const companionProto = WAProto.DeviceProps.encode(companion).finish();
 
   const registerPayload = {
     connectReason: 1,

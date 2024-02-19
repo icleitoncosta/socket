@@ -33,7 +33,7 @@ export class FrameSocket {
 
         this.throwIfClosed();
 
-        const size = data.byteLength;
+        const size = data?.byteLength;
         const introSize = this.introToSend ? this.introToSend.length : 0;
 
         this.socket.dataToSend.ensureAdditionalCapacity(introSize + 3 + size);

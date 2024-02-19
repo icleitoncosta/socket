@@ -5,16 +5,16 @@ import { MessageType } from './Utils';
 
 export type WAMessage = WAProto.WebMessageInfo;
 export type WAMessageContent = WAProto.IMessage;
-export type WAContactMessage = WAProto.ContactMessage;
-export type WAContactsArrayMessage = WAProto.ContactsArrayMessage;
-export type WAGroupInviteMessage = WAProto.GroupInviteMessage;
-export type WAListMessage = WAProto.IListMessage;
-export type WATemplateMessage = WAProto.ITemplateMessage;
-export type WAButtonsMessage = WAProto.IButtonsMessage;
+export type WAContactMessage = WAProto.Message.ContactMessage;
+export type WAContactsArrayMessage = WAProto.Message.ContactsArrayMessage;
+export type WAGroupInviteMessage = WAProto.Message.GroupInviteMessage;
+export type WAListMessage = WAProto.Message.IListMessage;
+export type WATemplateMessage = WAProto.Message.ITemplateMessage;
+export type WAButtonsMessage = WAProto.Message.IButtonsMessage;
 export type WAMessageKey = WAProto.IMessageKey;
-export type WATextMessage = WAProto.ExtendedTextMessage;
+export type WATextMessage = WAProto.Message.ExtendedTextMessage;
 export type WAContextInfo = WAProto.IContextInfo;
-export type WAGenericMediaMessage = WAProto.IVideoMessage | WAProto.IImageMessage | WAProto.IAudioMessage | WAProto.IDocumentMessage | WAProto.IStickerMessage;
+export type WAGenericMediaMessage = WAProto.Message.IVideoMessage | WAProto.Message.IImageMessage | WAProto.Message.IAudioMessage | WAProto.Message.IDocumentMessage | WAProto.Message.IStickerMessage;
 
 export interface WALocationMessage {
     degreesLatitude: number;
@@ -94,9 +94,9 @@ export const MimetypeMap = {
 };
 
 export const MessageTypeProto = {
-    [MessageType.image]: WAProto.ImageMessage,
-    [MessageType.video]: WAProto.VideoMessage,
-    [MessageType.audio]: WAProto.AudioMessage,
-    [MessageType.sticker]: WAProto.StickerMessage,
-    [MessageType.document]: WAProto.DocumentMessage,
-};
+    [MessageType.image]: WAProto?.Message?.ImageMessage as any,
+    [MessageType.video]: WAProto?.Message?.VideoMessage as any,
+    [MessageType.audio]: WAProto?.Message?.AudioMessage as any,
+    [MessageType.sticker]: WAProto?.Message?.StickerMessage as any,
+    [MessageType.document]: WAProto?.Message?.DocumentMessage as any,
+} as const;

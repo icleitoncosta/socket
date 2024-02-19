@@ -142,7 +142,7 @@ export class WaSignal {
         return this.storageSignal.hasSession(this.createLibSignalAddress(user));
     }
 
-    async processSenderKeyDistributionMessage(group, author, senderKeyDistributionMessage: WAProto.ISenderKeyDistributionMessage) {
+    async processSenderKeyDistributionMessage(group, author, senderKeyDistributionMessage: any) {
         const builder = new libsignal.GroupSessionBuilder(this.storageSignal);
 
         const senderName = new libsignal.SenderKeyName(group.toString(), this.createLibSignalAddress(author));
